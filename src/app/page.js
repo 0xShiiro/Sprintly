@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 
 export default async function Home() {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   return (
     <div className="container mx-auto px-4 py-8">
