@@ -3,15 +3,20 @@
 import React from 'react'
 import { useOrganization } from '@clerk/nextjs'
 import { useUser } from '@clerk/nextjs'
-import { BarLoader } from 'react-spinners'
+import { BarLoader, ClimbingBoxLoader } from 'react-spinners'
 
-const Loading = () => {
+
+
+const Loading = (Loading) => {
     const {isLoaded} = useOrganization();
     const {isLoaded:isLoadedUser} = useUser();
 
-    if(!isLoaded || !isLoadedUser){
+    if(!isLoaded || !isLoadedUser ){
         return (
-            <BarLoader className='mb-4' width={"100%"} color="#36d7b7"/>
+            <div className='fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30'>
+                <ClimbingBoxLoader className='mt-4 ' size={25} color="#36d7b7"/>
+            </div>
+            // <BarLoader  width={"100%"}  color="#36d7b7"/>
         )
     }else{
         <></>

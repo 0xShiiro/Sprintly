@@ -1,7 +1,10 @@
+'use server'
+
 import { auth } from "@clerk/nextjs/server";
-import { db } from "@/lib/db";
+import  db  from "../src/lib/prisma";
+import { clerkClient } from "@clerk/nextjs/server";
 export async function createProject(data){
-    const {userId,orgId} = auth();
+    const {userId,orgId} = await auth();
     if(!userId){
         throw new Error("Unauthorized");
     }
