@@ -3,7 +3,7 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import db from "@/lib/prisma";
 export async function getOrganization(slug) {
-  const { userId } = await auth();
+  const { userId } = auth();
   if (!userId) {
     throw new Error("Unauthorized");
   }
