@@ -1,8 +1,9 @@
 import React from 'react'
 import { getProject } from '../../../../../actions/project';
 import { notFound } from 'next/navigation';
+import SprintCreationForm from '../_components/SprintCreationForm';
 const page = async ({params}) => {
-    const {projectId} = params;
+    const {projectId} = await params;
     const project = await getProject(projectId);
     if(!project){
         notFound();
@@ -12,12 +13,12 @@ const page = async ({params}) => {
       {/* Sprint Creation  */}
       {/* Sprint Board */}
 
-      {project.sprints.length > 0?(
+      {project.sprints.length === 0?(
         <>
           <SprintCreationForm 
-            projectTtile={project.name}
+            projectTitle={project.name}
             projectId={projectId}
-            projectKet={project.key}
+            projectKey={project.key}
             sprintKey={project.sprints?.length+1}
             />
         </>
