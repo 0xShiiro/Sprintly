@@ -11,7 +11,6 @@ const page = () => {
 
     useEffect(()=>{
         if(organization){
-            
             router.push(`/organization/${organization.slug}`)
         }
     },[organization]);
