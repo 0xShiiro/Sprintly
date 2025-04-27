@@ -5,27 +5,30 @@
 @tailwind utilities;
 
 body {
-    font-family:Arial, Helvetica, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
 }
-Button:hover{
+
+Button:hover {
     cursor: pointer;
 }
 
-@layer utilities{
-    .text-balance{
+@layer utilities {
+    .text-balance {
         text-wrap: balance;
     }
-    .gradient-title{
-        @apply font-extrabold bg-gradient-to-br from-blue-500 via-blue-100 to-blue-400 bg-clip-text tracking-tighter text-transparent pr-2 pb-2; 
+
+    .gradient-title {
+        @apply font-extrabold bg-gradient-to-br from-blue-500 via-blue-100 to-blue-400 bg-clip-text tracking-tighter text-transparent pr-2 pb-2;
     }
 }
+
 .dotted-background {
     background-color: #0a111f;
-    background-image:radial-gradient(#4a5568 1px,transparent 1px);
+    background-image: radial-gradient(#4a5568 1px, transparent 1px);
     background-size: 30px 30px;
 }
 
-.rdp_root{
+.rdp_root {
     --rdp-day_button-border-radius: 0px !important;
     --rdp-range_start-background: red !important;
     --rdp-range_end-background: red !important;
@@ -33,3 +36,44 @@ Button:hover{
 }
 
 
+/* .custom-md-editor {
+    @apply bg-slate-950 text-white border border-slate-800 rounded-lg;
+  }
+
+  
+  .custom-md-editor .w-md-editor-content {
+    @apply bg-slate-950;
+    }
+    
+    .custom-md-editor .w-md-editor-text {
+        @apply text-white;
+        }
+        
+  .custom-md-editor .w-md-editor-input { 
+    @apply bg-slate-950 text-white;
+  }
+  
+  .custom-md-editor .w-md-editor-preview {
+    @apply bg-slate-950 text-white;
+    }
+    
+    .custom-md-editor .w-md-editor-preview-content {
+        @apply bg-slate-950 text-white;
+        }
+        
+        .custom-md-editor .w-md-editor-toolbar button:hover {
+            @apply text-white;
+            } */
+.custom-md-editor .w-md-editor-toolbar {
+    @apply bg-slate-900 border-b border-slate-800;
+}
+
+.custom-md-editor .w-md-editor-toolbar button {
+    @apply text-gray-400 hover:text-white;
+}
+
+.wmde-markdown ul{
+    list-style-type: disc;
+    padding-left:15px !important;
+    color:black !important;
+}

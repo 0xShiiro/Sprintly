@@ -1,10 +1,13 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import SprintManager from './SprintManager'
 import { DragDropContext, Droppable } from '@hello-pangea/dnd'
 import status from '../../../../../data/status.json'
 import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
+import CreateIssue from './CreateIssue'
+import useFetch from '../../../../../hooks/use-fetch'
+import { getIssuesforSprint } from '../../../../../actions/issues'
 const SprintBoard = ({ sprints, projectId, orgId }) => {
 
   const [currentsprint, setcurrentsprint] = useState(
@@ -16,9 +19,27 @@ const SprintBoard = ({ sprints, projectId, orgId }) => {
 
   }
   const handleAddIssue = (status) => {
-    setselectedStatus(status);
+    setselectedStatus(status);   
     setisDrawerOpen(true);
+       
   }
+
+  const{
+    loading: isFetchingIssues,
+    fn: fetchIssuesFn,
+    error: fetchIssuesError,
+    data: issues,
+    setData: setIssues,
+  } = useFetch(getIssuesforSprint)
+
+  const [filterIssues, setfilterIssues] = useState(issues);
+  console.log(issues)
+  useEffect(()=>{
+    if(currentsprint){
+      fetchIssuesFn(currentsprint.id)
+    }
+  },[currentsprint.id])  
+  const handleIssueCreated = (issue) => {}
   return (
     <div>
       {/* Sprint Manager */}
@@ -49,7 +70,7 @@ const SprintBoard = ({ sprints, projectId, orgId }) => {
                       {provided.placeholder}
                       {column.key === "TODO" &&
                         currentsprint.status !== "COMPLETED" && (
-                          <Button variant="ghost" className="w-full" onClick={() => {handleAddIssue(column.key)}}>
+                          <Button className="w-full border-white bg-red-500 hover:bg-red-900 hover:font-bold" onClick={() => {handleAddIssue(column.key)}}>
                             <Plus className="mr-2 h-4 w-4" />
                             Create Issue
                           </Button>
@@ -64,7 +85,15 @@ const SprintBoard = ({ sprints, projectId, orgId }) => {
           })}
         </div>
       </DragDropContext>
-
+          <CreateIssue
+            isOpen={isDrawerOpen}
+            onClose={() => setisDrawerOpen(false)}
+            sprintId={currentsprint.id}
+            status={selectedStatus}
+            projectId={projectId}
+            onIssueCreated={handleIssueCreated}
+            orgId={orgId}
+          />
     </div>
   )
 }

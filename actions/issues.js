@@ -1,3 +1,5 @@
+'use server'
+
 import  db  from "../src/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 export async function createIssue(projectId,data){
@@ -21,7 +23,7 @@ export async function createIssue(projectId,data){
             order:"desc",
         },
     })
-    const newOrder = lastIssue ? lastIssue.order + 1 : 1;
+    const newOrder = lastIssue ? lastIssue.order + 1 : 0;
 
      const issue = await db.issue.create({
         data:{
@@ -32,13 +34,34 @@ export async function createIssue(projectId,data){
             projectId:projectId,
             sprintId:data.sprintId,
             reporterId:user.id,
-            asigneeId:data.asigneeId || null,
+            assigneeId:data.assigneeId || null,
             order:newOrder,
         },
         include:{
             reporter:true,
-            asignee:true,
+            assignee:true,
         }
      })
      return issue;
+}
+
+export async function getIssuesforSprint(sprintId){
+    const {userId,orgId} = auth();
+    if(!userId || !orgId){
+        throw new Error("Unauthorized");
+    }
+    const issues = await db.issue.findMany({
+        where:{
+            sprintId,
+        },
+        orderBy:[
+            {status:"asc"},
+            {order:"asc"},
+        ],   
+        include:{
+            reporter:true,
+            assignee:true,
+        },
+    })
+    return issues;
 }

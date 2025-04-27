@@ -51,13 +51,14 @@ export async function getOrganzationUsers(orgId){
       organizationId: orgId,
     });
 
-    const userIds = organizationMemberships.map((member) => member.publicUserData.userId);
+    const userIds = organizationMemberships.data.map((member) => member.publicUserData.userId);
     const users = await db.user.findMany({
       where: {
         clerkUserId: {
-          id: userIds,
+          in: userIds,
         },
       },
     });
+
     return users;
 }
