@@ -7,10 +7,10 @@ import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
 import CreateIssue from './CreateIssue'
 import useFetch from '../../../../../hooks/use-fetch'
-import { getIssuesforSprint } from '../../../../../actions/issues'
+import { getIssuesforSprint,updateIssueOrder } from '../../../../../actions/issues'
 import IssueCard from '@/components/IssueCard'
 import { toast } from 'sonner'
-import { ClimbingBoxLoader } from 'react-spinners'
+import { BarLoader, ClimbingBoxLoader } from 'react-spinners'
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
@@ -83,6 +83,12 @@ const SprintBoard = ({ sprints, projectId, orgId }) => {
       //Updating the new ordered data
       const sortedIssues = newOrderedData.sort((a, b) => a.order - b.order);
       setIssues(newOrderedData, sortedIssues);
+      //Updating the order of the issues in the database
+      updateIssuesFn(sortedIssues).then(() => {
+        toast.success("Issues updated successfully");
+      }).catch(() => {
+        toast.error("Failed to update issues");
+      });
     }
   }
   const handleAddIssue = (status) => {
@@ -98,6 +104,12 @@ const SprintBoard = ({ sprints, projectId, orgId }) => {
     data: issues,
     setData: setIssues,
   } = useFetch(getIssuesforSprint)
+
+  const {
+    loading: isUpdatingIssues,
+    fn: updateIssuesFn,
+    error: updateIssuesError,
+  } = useFetch(updateIssueOrder)
 
   const [filterIssues, setfilterIssues] = useState(issues);
 
@@ -128,10 +140,16 @@ const SprintBoard = ({ sprints, projectId, orgId }) => {
         sprints={sprints}
         projectId={projectId}
       />
-      {isFetchingIssues && (
+      {isUpdatingIssues && (
+        <BarLoader className='mt-4' width={'100%'} color="#36d7b7" />
+      )}
+      {(isFetchingIssues) && (
         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
           <ClimbingBoxLoader className="mt-4 " size={25} color="#36d7b7" />
         </div>
+      )}
+      {updateIssuesError && (
+        toast.error(`Failed to update issues : ${updateIssuesError.message}`)
       )}
       {/* Kanban board */}
       <DragDropContext onDragEnd={onDragEnd}>
@@ -156,6 +174,7 @@ const SprintBoard = ({ sprints, projectId, orgId }) => {
                             key={issue.id}
                             draggableId={issue.id}
                             index={index}
+                            isDragDisabled={isUpdatingIssues}
                           >
                             {(provided) => (
 
