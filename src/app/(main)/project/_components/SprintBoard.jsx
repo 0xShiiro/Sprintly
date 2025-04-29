@@ -43,7 +43,7 @@ const SprintBoard = ({ sprints, projectId, orgId }) => {
       return;
     }
     const newOrderedData = [...issues];
-     
+
     //fetching the source and destination lists
     const sourceList = newOrderedData.filter(
       (issue) => issue.status === source.droppableId
@@ -52,7 +52,7 @@ const SprintBoard = ({ sprints, projectId, orgId }) => {
       (issue) => issue.status === destination.droppableId
     );
     //if the source and destination are same
-    if(source.droppableId === destination.droppableId){
+    if (source.droppableId === destination.droppableId) {
       const reorderedList = reorder(
         sourceList,
         source.index,
@@ -61,17 +61,17 @@ const SprintBoard = ({ sprints, projectId, orgId }) => {
       reorderedList.forEach((issue, index) => {
         issue.order = index;
       })
-      const sortedIssues = newOrderedData.sort((a,b)=> a.order - b.order)
-      setIssues(sortedIssues,sortedIssues);
+      const sortedIssues = newOrderedData.sort((a, b) => a.order - b.order)
+      setIssues(sortedIssues, sortedIssues);
       //if the source and destination are different
-    }else{
+    } else {
       // removed Card from the source list
       const [removed] = sourceList.splice(source.index, 1);
       //Assigned new Status to the removed card
       removed.status = destination.droppableId;
       //Added the removed card to the destination list
       destinationList.splice(destination.index, 0, removed);
-      
+
       //Updating the order of the source list
       sourceList.forEach((issue, index) => {
         issue.order = index;
@@ -81,8 +81,8 @@ const SprintBoard = ({ sprints, projectId, orgId }) => {
         issue.order = index;
       })
       //Updating the new ordered data
-      const sortedIssues = newOrderedData.sort((a,b)=> a.order - b.order);
-      setIssues(newOrderedData,sortedIssues);
+      const sortedIssues = newOrderedData.sort((a, b) => a.order - b.order);
+      setIssues(newOrderedData, sortedIssues);
     }
   }
   const handleAddIssue = (status) => {
@@ -91,7 +91,7 @@ const SprintBoard = ({ sprints, projectId, orgId }) => {
 
   }
 
-  const  {
+  const {
     loading: isFetchingIssues,
     fn: fetchIssuesFn,
     error: fetchIssuesError,
@@ -100,7 +100,7 @@ const SprintBoard = ({ sprints, projectId, orgId }) => {
   } = useFetch(getIssuesforSprint)
 
   const [filterIssues, setfilterIssues] = useState(issues);
-  console.log(issues)
+
   useEffect(() => {
     if (currentsprint.id) {
       fetchIssuesFn(currentsprint.id)
@@ -143,34 +143,34 @@ const SprintBoard = ({ sprints, projectId, orgId }) => {
                   return (
                     <div {...provided.droppableProps}
                       ref={provided.innerRef}
-                      className="space-y-2"
+                      className="space-y-4 "
                     >
                       <h3 className="font-semibold text-center" >
                         {column.name}
                       </h3>
 
                       {/* iSSUES */}
-                      {filterIssues?.filter((issue) => issue.status === column.key)
-                        .map((issue, index) => {
+                      {issues?.filter((issue) => issue.status === column.key)
+                        .map((issue, index) => (
                           <Draggable
                             key={issue.id}
                             draggableId={issue.id}
                             index={index}
                           >
-                            {(provided) => {
-                              return (
-                                <div
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
+                            {(provided) => (
 
-                                >
-                                  <IssueCard issue={issue} />
-                                </div>
-                              )
-                            }}
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+
+                              >
+                                <IssueCard issue={issue} />
+                              </div>
+
+                            )}
                           </Draggable>
-                        })}
+                        ))}
                       {provided.placeholder}
                       {column.key === "TODO" &&
                         currentsprint.status !== "COMPLETED" && (

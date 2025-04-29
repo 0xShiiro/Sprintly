@@ -77,3 +77,11 @@ Button:hover {
     padding-left:15px !important;
     color:black !important;
 }
+.issue-card{
+    border-top-width: 4px !important;
+    border-style: solid;
+    border-radius: 18px;
+    border-right: grey 1.5px solid;
+    border-left: grey 1.5px solid;
+    border-bottom: grey 1.5px solid;
+}

@@ -1,7 +1,8 @@
-import React from 'react'
+import React,{useState} from 'react'
 import UserAvatar from './UserAvatar'
 import { Badge } from './ui/badge'
 import { formatDistanceToNow } from 'date-fns'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card'
 
 const priorityColor = {
     LOW: "border-green-600",
@@ -22,11 +23,11 @@ const IssueCard = ({
     })
     return (
         <>
-            <Card className="cursor-pointer hover:shadow-md transition-shadow" >
-                <CardHeader className={`border-t-2 ${priorityColor[issue.priority]} rounded-lg`} >
+            <Card className={`issue-card ${priorityColor[issue.priority]} cursor-pointer hover:shadow-md transition-shadow bg-slate-950`} >
+                <CardHeader  >
                     <CardTitle>{issue.title}</CardTitle>
                 </CardHeader>
-                <CardContent className="flex gap-2 -mt-3" >
+                <CardContent className="flex gap-2" >
                     {showStatus && (<Badge variant="outline" className="-ml-1">\
                         {issue.priority}
                     </Badge>)}

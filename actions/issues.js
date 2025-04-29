@@ -50,7 +50,7 @@ export async function getIssuesforSprint(sprintId){
     if(!userId || !orgId){
         throw new Error("Unauthorized");
     }
-    const issues = await db.issue.findMany({
+    return await db.issue.findMany({
         where:{
             sprintId,
         },
@@ -62,6 +62,5 @@ export async function getIssuesforSprint(sprintId){
             reporter:true,
             assignee:true,
         },
-    })
-    return issues;
+    });
 }
