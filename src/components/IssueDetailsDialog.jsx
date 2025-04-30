@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 import { useState } from 'react'
@@ -35,9 +35,20 @@ const IssueDetailsDialog = ({
         router.push(`/project/${issue.projectId}?sprint=${issue.sprintId}`)
     }
 
-    const handleStatusChange = async (newStatus) => {}
-    const handlePriorityChange = async (newPriority) => {}
-    const handleDelete = async()=>{}
+
+    const handleStatusChange = async (newStatus) => {
+        setstatus(newStatus)
+        updateIssueFn(issue.id, { status: newStatus ,priority })
+
+    }
+    const handlePriorityChange = async (newPriority) => {
+        setpriority(newPriority)
+        updateIssueFn(issue.id, { status, priority: newPriority })
+    }
+    const handleDelete = async()=>{
+        window.confirm("Are you sure you want to delete this issue?") && deleteIssueFn(issue.id)
+        deleteIssueFn(issue.id)
+    }
     const {
         fn: updateIssueFn,
         loading: updateIssueLoading,
@@ -51,6 +62,17 @@ const IssueDetailsDialog = ({
         error: deleteIssueError,
         data: deleteIssueData
     } = useFetch(deleteIssue)
+
+    useEffect(()=>{
+        if(deleteIssueData){
+
+            onClose()
+            onDelete()
+        }
+        if(updateIssueData){
+            onUpdate(updateIssueData)
+        }
+    },[updateIssueData, deleteIssueData,updateIssueLoading])
     return (
         <Dialog open={isOpen} onOpenChange={onClose} >
             <DialogContent className='bg-black' >
@@ -92,7 +114,7 @@ const IssueDetailsDialog = ({
                             </SelectContent>
                         </Select>
                         <Select value={priority} onValueChange={handlePriorityChange} disabled={!canChange}>
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className={`w-full border ${borderCol} rounded`}>
                                 <SelectValue placeholder="Priority" />
                             </SelectTrigger>
                             <SelectContent>

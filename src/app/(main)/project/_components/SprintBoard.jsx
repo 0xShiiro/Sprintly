@@ -11,6 +11,7 @@ import { getIssuesforSprint,updateIssueOrder } from '../../../../../actions/issu
 import IssueCard from '@/components/IssueCard'
 import { toast } from 'sonner'
 import { BarLoader, ClimbingBoxLoader } from 'react-spinners'
+import BoardFilters from './BoardFilters'
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
@@ -113,6 +114,10 @@ const SprintBoard = ({ sprints, projectId, orgId }) => {
 
   const [filterIssues, setfilterIssues] = useState(issues);
 
+  const handleFilterChange =(newFilteredIssues) =>{
+    setfilterIssues(newFilteredIssues);
+  }
+
   useEffect(() => {
     if (currentsprint.id) {
       fetchIssuesFn(currentsprint.id)
@@ -140,6 +145,10 @@ const SprintBoard = ({ sprints, projectId, orgId }) => {
         sprints={sprints}
         projectId={projectId}
       />
+
+      {issues && !isFetchingIssues &&(
+        <BoardFilters issues={issues} onFilterChange={handleFilterChange} />
+      )}
       {isUpdatingIssues && (
         <BarLoader className='mt-4' width={'100%'} color="#36d7b7" />
       )}
@@ -184,7 +193,19 @@ const SprintBoard = ({ sprints, projectId, orgId }) => {
                                 {...provided.dragHandleProps}
 
                               >
-                                <IssueCard issue={issue} />
+                                <IssueCard issue={issue} 
+                                  onDelete={()=>fetchIssuesFn(currentsprint.id)}
+                                  onUpdate={(updated)=>{
+                                    setIssues((issues)=>{
+                                      issues.map((issue)=>{
+                                        if(issue.id === updated.id){
+                                          return updated;
+                                        }
+                                        return issue;
+                                      })
+                                    })
+                                  }}
+                                />
                               </div>
 
                             )}
