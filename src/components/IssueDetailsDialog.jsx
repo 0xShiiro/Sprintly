@@ -12,6 +12,7 @@ import { deleteIssue, updateIssue } from '../../actions/issues'
 import statuses from '../../data/status.json'
 import MDEditor from '@uiw/react-md-editor'
 import UserAvatar from './UserAvatar'
+import { toast } from 'sonner'
 
 const priorityOptions = ["LOW", "MEDIUM", "HIGH", "URGENT"];
 const IssueDetailsDialog = ({
@@ -39,15 +40,18 @@ const IssueDetailsDialog = ({
     const handleStatusChange = async (newStatus) => {
         setstatus(newStatus)
         updateIssueFn(issue.id, { status: newStatus ,priority })
+        
 
     }
     const handlePriorityChange = async (newPriority) => {
         setpriority(newPriority)
         updateIssueFn(issue.id, { status, priority: newPriority })
+        
     }
     const handleDelete = async()=>{
         window.confirm("Are you sure you want to delete this issue?") && deleteIssueFn(issue.id)
         deleteIssueFn(issue.id)
+        
     }
     const {
         fn: updateIssueFn,
@@ -65,12 +69,13 @@ const IssueDetailsDialog = ({
 
     useEffect(()=>{
         if(deleteIssueData){
-
             onClose()
             onDelete()
+            toast.success("Issue deleted Successfully")
         }
         if(updateIssueData){
             onUpdate(updateIssueData)
+            toast.success("Issue updated Successfully")
         }
     },[updateIssueData, deleteIssueData,updateIssueLoading])
     return (
@@ -155,6 +160,7 @@ const IssueDetailsDialog = ({
                             onClick={handleDelete}
                             disabled={deleteIssueLoading}
                             variant="destructive"
+                            className="bg-red-600 w-30 transition-all ease-in-out duration-300 hover:bg-red-900 hover:font-bold"
                             >
                                 {deleteIssueLoading ? "Deleting..." : "Delete"}
                             </Button>

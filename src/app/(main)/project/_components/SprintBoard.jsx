@@ -195,16 +195,14 @@ const SprintBoard = ({ sprints, projectId, orgId }) => {
                               >
                                 <IssueCard issue={issue} 
                                   onDelete={()=>fetchIssuesFn(currentsprint.id)}
-                                  onUpdate={(updated)=>{
-                                    setIssues((issues)=>{
-                                      issues.map((issue)=>{
-                                        if(issue.id === updated.id){
-                                          return updated;
-                                        }
+                                  onUpdate={(updated) =>
+                                    setIssues((issues) =>
+                                      issues.map((issue) => {
+                                        if (issue.id === updated.id) return updated;
                                         return issue;
                                       })
-                                    })
-                                  }}
+                                    )
+                                  }
                                 />
                               </div>
 

@@ -132,9 +132,16 @@ export async function updateIssue(issueId, data) {
             where: {
                 id: issueId,
             },
+            include:{
+              project:true
+            }
         });
-        if(issue.project.organizationId !== orgId) {
-            throw new Error("Unauthorized");
+        if (!issue) {
+          throw new Error("Issue not found");
+        }
+    
+        if (issue.project.organizationId !== orgId) {
+          throw new Error("Unauthorized");
         }
 
         const updatedIssue = await db.issue.update({
@@ -153,5 +160,38 @@ export async function updateIssue(issueId, data) {
         return updatedIssue;
     } catch (error) {
         throw new Error("Error updating issue: " + error.message);
+
     }
+}
+export async function getUserIssues(userId){
+  const {orgId } = auth();
+    if (!userId || !orgId) {
+        throw new Error("No User Id or Organization Id Found");
+    }
+    const user = await db.user.findUnique({
+        where: {
+            clerkUserId: userId,
+        },
+    });
+    if(!user) {
+        throw new Error("User not found");
+    }
+
+    const issues = await db.issue.findMany({
+      where:{
+        OR:[{ assigneeId: user.id},{ reporterId:user.id}],
+        project:{
+          organizationId:orgId,
+        },
+      },
+      include:{
+        project:true,
+        assignee:true,
+        reporter:true
+      },
+      orderBy:{
+        updatedAt:"desc"
+      }
+    });
+    return issues;
 }

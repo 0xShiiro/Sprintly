@@ -2,11 +2,17 @@ import React from 'react'
 import { getOrganization } from '../../../../../actions/organization';
 import OrgSwitcher from '@/components/OrgSwitcher';
 import ProjectList from './_components/ProjectList';
+import UserIssues from './_components/UserIssues';
+import { auth } from '@clerk/nextjs/server';
+import { redirect } from 'next/navigation';
 
 export default async function Page({ params }) {
     const { orgId } = await params;
     const organization = await getOrganization(orgId);
-
+    const userId = auth();
+    if (!userId) {
+        redirect("/sign-in")
+    }
     if (!organization) {
         return <div>Organization Not Found</div>
     }
@@ -22,7 +28,7 @@ export default async function Page({ params }) {
                 <ProjectList orgId={organization.id}/>
             </div>
             <div className="mt-8">
-                Show user assigned and reported issues here
+                <UserIssues userId={userId} />
             </div>
         </div>
     )

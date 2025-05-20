@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState } from 'react'
 import UserAvatar from './UserAvatar'
 import { Badge } from './ui/badge'
